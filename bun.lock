@@ -5,7 +5,7 @@
       "name": "boda-astro",
       "dependencies": {
         "@astrojs/react": "^5.0.0",
-        "@astrojs/vercel": "^10.0.0",
+        "@astrojs/vercel": "^10.0.4",
         "@fontsource-variable/playfair-display": "^5.2.8",
         "@fontsource/lato": "^5.2.0",
         "@libsql/client": "^0.15.15",
