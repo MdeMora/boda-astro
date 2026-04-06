@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@import "@fontsource-variable/playfair-display";
+@import "@fontsource/lato/100.css";
+@import "@fontsource/lato/300.css";
+@import "@fontsource/lato/400.css";
+@import "@fontsource/lato/700.css";
+@import "@fontsource/lato/900.css";
+
+:root {
+  /* Elegant Beige Theme */
+  --wedding-beige: #F5F5DC;
+  --wedding-cream: #FFFDD0;
+  --wedding-sand: #E1C699;
+  --wedding-olive: #808000;
+  --wedding-charcoal: #36454F;
+}
+
+@theme inline {
+  --color-wedding-beige: var(--wedding-beige);
+  --color-wedding-cream: var(--wedding-cream);
+  --color-wedding-sand: var(--wedding-sand);
+  --color-wedding-olive: var(--wedding-olive);
+  --color-wedding-charcoal: var(--wedding-charcoal);
+
+  --font-serif: "Playfair Display Variable", serif;
+  --font-sans: "Lato", sans-serif;
+}
+
+body {
+  background-color: var(--wedding-beige);
+  color: var(--wedding-charcoal);
+}
