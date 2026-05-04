@@ -1,12 +1,14 @@
 ---
 const faqs = [
   {
-    question: "¿La ceremonia, el banquete y la fiesta se celebran en el mismo lugar?",
+    question:
+      "¿La ceremonia, el banquete y la fiesta se celebran en el mismo lugar?",
     answer: "Sí, toda la boda se celebra en el mismo lugar.",
   },
   {
     question: "¿Hay aparcamiento disponible?",
-    answer: "Sí, las Bodegas Casa del Valle dispone de amplio aparcamiento para todos los invitados.",
+    answer:
+      "Sí, las Bodegas Casa del Valle dispone de amplio aparcamiento para todos los invitados.",
   },
   {
     question: "¿A qué hora debo llegar?",
@@ -26,7 +28,8 @@ const faqs = [
   },
   {
     question: "¿Cómo vuelvo a casa después de la boda?",
-    answer: "Hemos avisado a taxis para que estén disponibles. Si bebes, no conduzcas.",
+    answer:
+      "Hemos avisado a taxis para que estén disponibles. Si bebes, no conduzcas.",
   },
   {
     question: "¿Puedo llevar confeti?",
@@ -46,39 +49,62 @@ const faqs = [
   },
 ];
 ---
+
 <section class="py-20 px-4 bg-wedding-cream/30">
   <div class="max-w-3xl mx-auto">
     <header class="text-center mb-14 md:mb-16">
-      <p class="text-wedding-olive tracking-[0.2em] uppercase text-sm md:text-base font-sans mb-4">
+      <p
+        class="text-wedding-olive tracking-[0.2em] uppercase text-sm md:text-base font-sans mb-4"
+      >
         Dudas
       </p>
       <h2 class="text-5xl md:text-6xl font-serif text-wedding-charcoal mb-6">
         Preguntas
       </h2>
-      <div class="w-16 h-px bg-wedding-olive/25 mx-auto" aria-hidden="true" />
+      <div class="w-16 h-px bg-wedding-olive/25 mx-auto" aria-hidden="true">
+      </div>
     </header>
 
     <div class="flex flex-col gap-2 md:gap-3">
-      {faqs.map((faq, index) => (
-        <div class="faq-item" data-open={index === 0 ? "true" : "false"}>
-          <button
-            type="button"
-            class="faq-toggle group w-full min-h-14 py-6 md:py-7 flex items-start justify-between gap-6 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wedding-olive/25 focus-visible:ring-offset-4 focus-visible:ring-offset-wedding-cream/30 rounded-sm"
-            aria-expanded={index === 0 ? "true" : "false"}
-          >
-            <span class="faq-question font-serif text-2xl md:text-3xl leading-snug transition-colors duration-300 text-wedding-charcoal group-hover:text-wedding-charcoal/75">
-              {faq.question}
-            </span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="faq-chevron w-7 h-7 md:w-8 md:h-8 shrink-0 mt-0.5 text-wedding-olive/45 transition-transform duration-300 ease-out" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
+      {
+        faqs.map((faq, index) => (
+          <div class="faq-item" data-open={index === 0 ? "true" : "false"}>
+            <button
+              type="button"
+              class="faq-toggle group w-full min-h-14 py-6 md:py-7 flex items-start justify-between gap-6 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wedding-olive/25 focus-visible:ring-offset-4 focus-visible:ring-offset-wedding-cream/30 rounded-sm"
+              aria-expanded={index === 0 ? "true" : "false"}
+            >
+              <span class="faq-question font-serif text-2xl md:text-3xl leading-snug transition-colors duration-300 text-wedding-charcoal group-hover:text-wedding-charcoal/75">
+                {faq.question}
+              </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="faq-chevron w-7 h-7 md:w-8 md:h-8 shrink-0 mt-0.5 text-wedding-olive/45 transition-transform duration-300 ease-out"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
 
-          <div class="faq-answer pb-7 md:pb-8 -mt-1 pl-0 md:pl-1 border-l-2 border-wedding-olive/20 ml-1 md:ml-2" hidden={index !== 0}>
-            <p class="pl-5 md:pl-6 font-sans text-xl md:text-2xl text-wedding-charcoal/80 leading-relaxed max-w-[52ch] animate-fade-in">
-              {faq.answer}
-            </p>
+            <div
+              class="faq-answer pb-7 md:pb-8 -mt-1 pl-0 md:pl-1 border-l-2 border-wedding-olive/20 ml-1 md:ml-2"
+              hidden={index !== 0}
+            >
+              <p class="pl-5 md:pl-6 font-sans text-xl md:text-2xl text-wedding-charcoal/80 leading-relaxed max-w-[52ch] animate-fade-in">
+                {faq.answer}
+              </p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      }
     </div>
   </div>
 </section>

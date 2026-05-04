@@ -160,6 +160,12 @@ export default function Rsvp() {
       className="relative z-0 px-4 py-12 min-h-svh bg-wedding-beige flex flex-col justify-center items-center"
       id="rsvp"
     >
+      <img
+        src="/fondo2.jpg"
+        alt=""
+        aria-hidden="true"
+        className="w-full h-full object-cover absolute top-0 left-0 opacity-30"
+      />
       <div className="w-full max-w-2xl bg-white/30 backdrop-blur-md p-8 md:p-16 rounded-3xl shadow-xl border border-white/50 min-h-[400px]">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-serif text-wedding-charcoal">

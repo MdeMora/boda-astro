@@ -8,11 +8,11 @@
 
 :root {
   /* Elegant Beige Theme */
-  --wedding-beige: #F5F5DC;
-  --wedding-cream: #FFFDD0;
-  --wedding-sand: #E1C699;
+  --wedding-beige: #faf5ec;
+  --wedding-cream: #fffdd0;
+  --wedding-sand: #e1c699;
   --wedding-olive: #808000;
-  --wedding-charcoal: #36454F;
+  --wedding-charcoal: #36454f;
 }
 
 @theme inline {
