@@ -94,13 +94,12 @@ const faqs = [
               </svg>
             </button>
 
-            <div
-              class="faq-answer pb-7 md:pb-8 -mt-1 pl-0 md:pl-1 border-l-2 border-wedding-olive/20 ml-1 md:ml-2"
-              hidden={index !== 0}
-            >
-              <p class="pl-5 md:pl-6 font-sans text-xl md:text-2xl text-wedding-charcoal/80 leading-relaxed max-w-[52ch] animate-fade-in">
-                {faq.answer}
-              </p>
+            <div class="faq-answer -mt-1 pl-0 md:pl-1 border-l-2 border-wedding-olive/20 ml-1 md:ml-2">
+              <div class="faq-answer-inner">
+                <p class="pl-5 md:pl-6 pb-7 md:pb-8 font-sans text-xl md:text-2xl text-wedding-charcoal/80 leading-relaxed max-w-[52ch]">
+                  {faq.answer}
+                </p>
+              </div>
             </div>
           </div>
         ))
@@ -117,29 +116,37 @@ const faqs = [
     transform: rotate(-180deg);
     color: color-mix(in srgb, var(--wedding-olive) 70%, transparent);
   }
+  .faq-answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 320ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 240ms ease-out;
+  }
+  .faq-item[data-open="true"] .faq-answer {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  .faq-answer-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq-answer {
+      transition: none;
+    }
+  }
 </style>
 
 <script>
   const items = document.querySelectorAll<HTMLElement>(".faq-item");
   items.forEach((item) => {
     const btn = item.querySelector<HTMLButtonElement>(".faq-toggle");
-    const answer = item.querySelector<HTMLElement>(".faq-answer");
     btn?.addEventListener("click", () => {
       const isOpen = item.dataset.open === "true";
-      // Close all
-      items.forEach((other) => {
-        other.dataset.open = "false";
-        const b = other.querySelector<HTMLButtonElement>(".faq-toggle");
-        const a = other.querySelector<HTMLElement>(".faq-answer");
-        b?.setAttribute("aria-expanded", "false");
-        if (a) a.hidden = true;
-      });
-      // Open this if it wasn't
-      if (!isOpen) {
-        item.dataset.open = "true";
-        btn.setAttribute("aria-expanded", "true");
-        if (answer) answer.hidden = false;
-      }
+      item.dataset.open = isOpen ? "false" : "true";
+      btn.setAttribute("aria-expanded", isOpen ? "false" : "true");
     });
   });
 </script>
