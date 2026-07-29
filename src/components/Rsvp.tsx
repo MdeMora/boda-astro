@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { actions } from "astro:actions";
 import {
   AlertCircle,
+  CalendarDays,
   Check,
   ChevronLeft,
+  Heart,
   Loader2,
   Plus,
   Search,
+  Sparkles,
   X,
 } from "lucide-react";
 
@@ -32,6 +35,8 @@ const isAnswered = (guest: Guest) =>
   guest.attendance === "confirmed" || guest.attendance === "declined";
 
 export default function Rsvp() {
+  const rsvpCardRef = useRef<HTMLDivElement>(null);
+  const successTitleRef = useRef<HTMLHeadingElement>(null);
   const [step, setStep] = useState<"search" | "review" | "success">("search");
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Guest[]>([]);
@@ -85,6 +90,29 @@ export default function Rsvp() {
       window.clearTimeout(timer);
     };
   }, [query]);
+
+  useEffect(() => {
+    if (step !== "success") return;
+
+    const frame = window.requestAnimationFrame(() => {
+      successTitleRef.current?.focus({ preventScroll: true });
+
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      const scrollTarget = isMobile
+        ? document.getElementById("rsvp")
+        : rsvpCardRef.current;
+
+      scrollTarget?.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: isMobile ? "start" : "center",
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [step]);
 
   const updateGuestDraft = (id: number, changes: Partial<Guest>) => {
     setGuestDrafts((currentGuests) =>
@@ -236,6 +264,10 @@ export default function Rsvp() {
   };
 
   const answeredCount = guestDrafts.filter(isAnswered).length;
+  const confirmedCount = guestDrafts.filter(
+    (guest) => guest.attendance === "confirmed",
+  ).length;
+  const hasConfirmedGuests = confirmedCount > 0;
   const greetingName = selectedName || mainGuest?.name || "";
 
   return (
@@ -251,10 +283,41 @@ export default function Rsvp() {
         className="absolute inset-0 h-full w-full object-cover opacity-25"
       />
 
-      <div className="relative w-full max-w-3xl rounded-3xl border border-white/80 bg-[#fffdf9]/95 px-5 py-8 shadow-[0_24px_70px_rgba(54,69,79,0.12)] backdrop-blur-sm sm:px-10 sm:py-12 md:px-14">
-        <header className="mx-auto mb-8 max-w-xl text-center">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-wedding-olive">
-            Confirmación de asistencia
+      <div
+        ref={rsvpCardRef}
+        className={`relative w-full max-w-3xl rounded-3xl border border-white/80 bg-[#fffdf9]/95 px-5 py-8 shadow-[0_24px_70px_rgba(54,69,79,0.12)] backdrop-blur-sm sm:px-10 sm:py-12 md:px-14 ${
+          step === "success" ? "rsvp-card--success overflow-hidden" : ""
+        }`}
+      >
+        {step === "success" && (
+          <div className="rsvp-success-backdrop" aria-hidden="true">
+            <img
+              src="/boda-flores.webp"
+              alt=""
+              className="rsvp-success-flower rsvp-success-flower--left"
+            />
+            <img
+              src="/boda-flores.webp"
+              alt=""
+              className="rsvp-success-flower rsvp-success-flower--right"
+            />
+          </div>
+        )}
+
+        <header className="relative z-10 mx-auto mb-8 max-w-xl text-center">
+          <p
+            className={
+              step === "success"
+                ? "mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-wedding-olive/20 bg-wedding-olive/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-wedding-olive"
+                : "mb-3 text-xs font-bold uppercase tracking-[0.2em] text-wedding-olive"
+            }
+          >
+            {step === "success" && (
+              <Check className="h-3.5 w-3.5" aria-hidden="true" />
+            )}
+            {step === "success"
+              ? "Respuesta guardada"
+              : "Confirmación de asistencia"}
           </p>
 
           {step === "search" && (
@@ -287,10 +350,14 @@ export default function Rsvp() {
 
           {step === "success" && (
             <h2
+              ref={successTitleRef}
               id="rsvp-title"
-              className="font-serif text-3xl leading-tight text-wedding-charcoal sm:text-4xl"
+              tabIndex={-1}
+              className="font-serif text-3xl leading-tight text-wedding-charcoal outline-none sm:text-4xl"
             >
-              ¡Respuesta guardada!
+              {hasConfirmedGuests
+                ? "¡Nos vemos en la boda!"
+                : "Gracias por avisarnos"}
             </h2>
           )}
         </header>
@@ -723,33 +790,76 @@ export default function Rsvp() {
         )}
 
         {step === "success" && (
-          <div className="mx-auto max-w-md animate-fade-in py-4 text-center">
-            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-wedding-olive/10">
-              <Check
-                className="h-8 w-8 text-wedding-olive"
-                aria-hidden="true"
-              />
+          <div
+            className="rsvp-success-content relative z-10 mx-auto max-w-md pb-2 text-center"
+            role="status"
+            aria-live="polite"
+          >
+            <div
+              className="rsvp-success-emblem mx-auto mb-7"
+              aria-hidden="true"
+            >
+              <span className="rsvp-success-petal rsvp-success-petal--1" />
+              <span className="rsvp-success-petal rsvp-success-petal--2" />
+              <span className="rsvp-success-petal rsvp-success-petal--3" />
+              <span className="rsvp-success-petal rsvp-success-petal--4" />
+              <span className="rsvp-success-petal rsvp-success-petal--5" />
+              <span className="rsvp-success-petal rsvp-success-petal--6" />
+              <span className="rsvp-success-petal rsvp-success-petal--7" />
+              <span className="rsvp-success-petal rsvp-success-petal--8" />
+
+              <div className="rsvp-success-seal">
+                <Check className="rsvp-success-check" />
+              </div>
+              <Sparkles className="rsvp-success-sparkle rsvp-success-sparkle--one" />
+              <Heart className="rsvp-success-heart" />
+              <Sparkles className="rsvp-success-sparkle rsvp-success-sparkle--two" />
             </div>
-            <p className="text-base leading-relaxed text-wedding-charcoal/80">
-              Gracias, {greetingName}. Hemos guardado{" "}
+
+            <p className="font-serif text-xl text-wedding-charcoal">
+              {hasConfirmedGuests ? "Qué ilusión" : "Gracias"}, {greetingName}.
+            </p>
+            <p className="mt-2 text-base leading-relaxed text-wedding-charcoal/75">
+              Hemos guardado{" "}
               {guestDrafts.length === 1
                 ? "tu respuesta"
                 : `las respuestas de ${guestDrafts.length} personas`}
-              .
+              .{" "}
+              {!hasConfirmedGuests &&
+                "Sentimos que no podáis acompañarnos; os echaremos de menos."}
             </p>
+
+            {hasConfirmedGuests && (
+              <div className="mx-auto mt-7 flex max-w-sm items-center gap-4 rounded-2xl border border-wedding-sand/45 bg-white/80 p-4 text-left shadow-sm">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-wedding-sand/20 text-wedding-olive">
+                  <CalendarDays className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <span>
+                  <time
+                    dateTime="2026-10-02"
+                    className="block font-serif text-lg font-medium text-wedding-charcoal"
+                  >
+                    2 de octubre de 2026
+                  </time>
+                  <span className="mt-0.5 block text-sm text-wedding-charcoal/65">
+                    Casa del Valle · Yepes
+                  </span>
+                </span>
+              </div>
+            )}
 
             <div className="mt-8 flex flex-col gap-3">
               <button
                 type="button"
                 onClick={() => setStep("review")}
-                className="min-h-12 rounded-xl border border-wedding-olive/50 bg-white px-6 text-sm font-bold text-wedding-olive outline-none hover:bg-wedding-olive/5 focus-visible:ring-4 focus-visible:ring-wedding-olive/20"
+                className="min-h-12 rounded-xl border border-wedding-olive/50 bg-white px-6 text-sm font-bold text-wedding-olive shadow-sm outline-none transition-[transform,background-color] duration-150 hover:bg-wedding-olive/5 focus-visible:ring-4 focus-visible:ring-wedding-olive/20 active:scale-[0.97]"
               >
                 Revisar o cambiar respuestas
               </button>
               <button
                 type="button"
                 onClick={resetSearch}
-                className="min-h-11 rounded-xl px-6 text-sm font-bold text-wedding-charcoal/70 outline-none hover:bg-wedding-beige focus-visible:ring-4 focus-visible:ring-wedding-charcoal/15"
+                className="min-h-11 rounded-xl px-6 text-sm font-bold text-wedding-charcoal/70 outline-none transition-[transform,background-color] duration-150 hover:bg-wedding-beige focus-visible:ring-4 focus-visible:ring-wedding-charcoal/15 active:scale-[0.97]"
               >
                 Buscar otra invitación
               </button>
