@@ -1,0 +1,164 @@
+/* Seating planner — shared inputs and modal dialogs/forms */
+
+/* ---------- inputs ---------- */
+
+.sp-input {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--sp-line);
+  border-radius: 9px;
+  background: white;
+  color: var(--sp-charcoal);
+  font-family: var(--sp-font-sans);
+  font-size: 0.9rem;
+}
+
+.sp-input:hover {
+  border-color: color-mix(in srgb, var(--sp-olive) 45%, transparent);
+}
+
+.sp-input:disabled {
+  background: var(--sp-gray-bg);
+  color: var(--sp-gray);
+  cursor: not-allowed;
+}
+
+.sp-input--compact {
+  padding: 0.38rem 0.6rem;
+  font-size: 0.84rem;
+}
+
+.sp-input--number {
+  max-width: 7rem;
+}
+
+.sp-input--area {
+  resize: vertical;
+  min-height: 4.4rem;
+}
+
+.sp-label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sp-ink-soft, #5d6b74);
+}
+
+.sp-label--inline {
+  margin: 0;
+  flex: none;
+}
+
+.sp-hint {
+  margin: 0.3rem 0 0;
+  font-size: 0.78rem;
+  color: var(--sp-ink-soft, #5d6b74);
+}
+
+.sp-field__error {
+  margin: 0.35rem 0 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--sp-terracotta);
+}
+
+.sp-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- dialogs ---------- */
+
+.sp-dialog {
+  width: min(30rem, calc(100vw - 2rem));
+  border: 1px solid var(--sp-line-soft);
+  border-radius: var(--sp-radius-lg);
+  background: var(--sp-card);
+  color: var(--sp-charcoal);
+  padding: 0;
+  box-shadow: 0 24px 60px color-mix(in srgb, #36454f 28%, transparent);
+}
+
+.sp-dialog--wide {
+  width: min(38rem, calc(100vw - 2rem));
+}
+
+.sp-dialog::backdrop {
+  background: color-mix(in srgb, #26333b 46%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.sp-dialog__inner {
+  padding: 1.2rem 1.4rem 1.3rem;
+}
+
+.sp-dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.sp-dialog__title {
+  margin: 0;
+  font-family: var(--sp-font-serif);
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.sp-dialog__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+
+.sp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.sp-field {
+  min-width: 0;
+  flex: 1;
+}
+
+.sp-field--check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: end;
+  padding-bottom: 0.55rem;
+}
+
+.sp-field-row {
+  display: flex;
+  gap: 0.9rem;
+}
+
+.sp-label--check {
+  margin: 0;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.9rem;
+  color: var(--sp-charcoal);
+}
+
+.sp-input--area {
+  width: 100%;
+  font-family: var(--sp-font-sans);
+}
+
+.sp-confirm__body {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--sp-charcoal);
+}
+
