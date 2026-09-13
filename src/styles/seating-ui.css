@@ -1,0 +1,22 @@
+@theme inline {
+  --color-background: var(--sp-card);
+  --color-foreground: var(--sp-charcoal);
+  --color-popover: var(--sp-card);
+  --color-popover-foreground: var(--sp-charcoal);
+  --color-primary: var(--sp-olive);
+  --color-primary-foreground: var(--sp-card);
+  --color-secondary: var(--sp-ivory-deep);
+  --color-secondary-foreground: var(--sp-charcoal);
+  --color-muted: var(--sp-ivory-deep);
+  --color-muted-foreground: var(--sp-ink-soft);
+  --color-accent: var(--sp-olive-soft);
+  --color-accent-foreground: var(--sp-olive-deep);
+  --color-destructive: var(--sp-terracotta);
+  --color-border: var(--sp-line);
+  --color-input: var(--sp-line);
+  --color-ring: var(--sp-olive);
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}

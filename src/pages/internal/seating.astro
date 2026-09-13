@@ -1,0 +1,28 @@
+---
+/**
+ * Internal seating planner for Cristina y Miguel.
+ * Protected by the password cookie gate in `src/middleware.ts`; this page
+ * itself renders no guest data on the server — everything is
+ * browser-local (localStorage + client-side React).
+ */
+import "@/styles/global.css";
+import "@/styles/seating-ui.css";
+import "@/styles/seating.css";
+import "@/styles/seating-map.css";
+import SeatingPlanner from "@/components/seating/SeatingPlanner";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" />
+    <title>Plan de mesa · Panel interno</title>
+  </head>
+  <body class="sp-body">
+    <SeatingPlanner client:load />
+  </body>
+</html>

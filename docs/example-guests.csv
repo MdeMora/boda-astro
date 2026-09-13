@@ -1,0 +1,7 @@
+name,group,attendance,dietaryRestrictions,allergies,notes,isChild
+Invitada de ejemplo 1,Familia A,confirmed,vegetarian,Frutos secos,,false
+Invitado de ejemplo 2,Familia A,confirmed,omnivore,,,false
+Peque de ejemplo,Familia A,confirmed,omnivore,,Menú infantil,true
+Invitada de ejemplo 3,Amigos,confirmed,piscivegetarian,,,false
+Invitado pendiente,Amigos,pending,omnivore,,,false
+Invitada ausente,Amigos,declined,omnivore,,,false

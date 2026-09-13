@@ -1,0 +1,110 @@
+---
+const iban = "ES8815447889746651394869";
+const formattedIban = iban.match(/.{1,4}/g)?.join(" ");
+---
+
+<section
+  id="regalos"
+  aria-labelledby="gifts-title"
+  class="bg-wedding-beige px-4 py-20 md:py-24"
+>
+  <div
+    class="reveal mx-auto flex max-w-3xl flex-col items-center gap-8 text-center"
+  >
+    <header class="flex flex-col items-center gap-5">
+      <p
+        class="font-sans text-sm tracking-[0.2em] text-wedding-olive uppercase md:text-base"
+      >
+        Un detalle con cariño
+      </p>
+      <h2
+        id="gifts-title"
+        class="text-balance font-serif text-4xl leading-tight text-wedding-charcoal md:text-5xl"
+      >
+        El mejor regalo es compartirlo con vosotros
+      </h2>
+      <div class="h-px w-16 bg-wedding-olive/25" aria-hidden="true"></div>
+    </header>
+
+    <p
+      class="max-w-xl text-pretty font-sans text-xl leading-relaxed text-wedding-charcoal/80 md:text-2xl"
+    >
+      Vuestra compañía es lo más importante para nosotros. Si además queréis
+      tener un detalle, os dejamos aquí nuestro número de cuenta.
+    </p>
+
+    <div
+      class="flex w-full max-w-xl flex-col items-center gap-5 rounded-lg border border-wedding-olive/20 bg-white/30 px-4 py-8 sm:px-8 sm:py-10"
+    >
+      <p
+        class="font-sans text-xs tracking-[0.2em] text-wedding-olive uppercase"
+      >
+        Cuenta bancaria · IBAN
+      </p>
+      <p
+        id="gift-iban"
+        class="max-w-full select-all text-balance font-sans text-xl leading-relaxed tracking-wide text-wedding-charcoal tabular-nums sm:text-2xl"
+      >
+        {formattedIban}
+      </p>
+      <button
+        id="copy-iban"
+        type="button"
+        data-iban={iban}
+        hidden
+        class="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border border-wedding-olive/30 px-5 py-2 text-sm text-wedding-olive transition-colors duration-150 hover:bg-wedding-olive/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-wedding-olive active:bg-wedding-olive/20 motion-reduce:transition-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect width="14" height="14" x="8" y="8" rx="2"></rect>
+          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+          ></path>
+        </svg>
+        Copiar IBAN
+      </button>
+      <p
+        id="copy-iban-status"
+        role="status"
+        class="min-h-10 text-sm leading-5 text-wedding-olive sm:min-h-5"
+      >
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>("#copy-iban");
+  const status = document.querySelector<HTMLElement>("#copy-iban-status");
+
+  if (button && status && navigator.clipboard) {
+    button.hidden = false;
+    let resetStatus: ReturnType<typeof setTimeout>;
+
+    button.addEventListener("click", async () => {
+      const iban = button.dataset.iban;
+      if (!iban) return;
+
+      clearTimeout(resetStatus);
+      try {
+        await navigator.clipboard.writeText(iban);
+        status.textContent = "IBAN copiado. ¡Gracias por vuestro cariño!";
+      } catch {
+        status.textContent =
+          "No se ha podido copiar. Selecciona el IBAN y cópialo manualmente.";
+      }
+      resetStatus = setTimeout(() => {
+        status.textContent = "";
+      }, 6000);
+    });
+  }
+</script>
