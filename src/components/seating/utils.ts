@@ -2,6 +2,17 @@ import type { PlannerGuest, PlannerTable } from "@/lib/seating";
 
 export const STORAGE_KEY = "wedding-seating-plan-v1";
 
+export const defaultPosition = (index: number): { x: number; y: number } => ({
+  x: 40 + (index % 3) * 420,
+  y: 40 + Math.floor(index / 3) * 420,
+});
+
+export function errorText(error: unknown, fallback: string): string {
+  if (error instanceof Error && error.message) return error.message;
+  if (typeof error === "string" && error.trim()) return error;
+  return fallback;
+}
+
 export const ATTENDANCE_LABELS: Record<PlannerGuest["attendance"], string> = {
   confirmed: "Confirmado",
   pending: "Pendiente",

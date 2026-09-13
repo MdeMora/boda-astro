@@ -1,0 +1,256 @@
+/* Seating planner — guest sidebar (filters, guest list) */
+
+/* ---------- sidebar ---------- */
+
+.sp-sidebar {
+  position: sticky;
+  top: 1rem;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+}
+
+.sp-sidebar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.15rem 0.8rem;
+}
+
+.sp-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0 1.15rem 0.9rem;
+  border-bottom: 1px solid var(--sp-line-soft);
+}
+
+.sp-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sp-search__icon {
+  position: absolute;
+  left: 0.7rem;
+  width: 0.95rem;
+  height: 0.95rem;
+  color: var(--sp-ink-soft, #5d6b74);
+  pointer-events: none;
+}
+
+.sp-input--search {
+  width: 100%;
+  padding-left: 2.2rem;
+  padding-right: 2rem;
+}
+
+.sp-filters__row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.sp-filters__checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+}
+
+.sp-checkwrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.84rem;
+  color: var(--sp-charcoal);
+}
+
+.sp-check {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--sp-olive);
+}
+
+.sp-sidebar__result {
+  margin: 0.55rem 1.15rem 0;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sp-ink-soft, #5d6b74);
+}
+
+.sp-guest-list {
+  margin: 0.4rem 0 0;
+  padding: 0.35rem 0.65rem 0.9rem;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.sp-guest-item + .sp-guest-item {
+  margin-top: 0.35rem;
+}
+
+.sp-guest-group {
+  margin: 0.9rem 0.45rem 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--sp-olive) 75%, var(--sp-charcoal));
+  border-bottom: 1px solid var(--sp-line-soft);
+  padding-bottom: 0.25rem;
+}
+
+.sp-guest-item:first-child .sp-guest-group {
+  margin-top: 0.35rem;
+}
+
+.sp-guest-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem 0.75rem;
+  padding: 0.55rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 12px;
+}
+
+.sp-guest-row:hover,
+.sp-guest-row:focus-within {
+  background: color-mix(in srgb, var(--sp-sand) 14%, transparent);
+}
+
+.sp-guest-row--seated:hover,
+.sp-guest-row--seated:focus-within {
+  background: color-mix(in srgb, var(--sp-olive) 8%, white);
+}
+
+.sp-guest-row__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1 1 13rem;
+  min-width: 0;
+}
+
+.sp-guest-row__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.sp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.sp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  max-width: 100%;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.sp-chip svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex: none;
+}
+
+.sp-chip--confirmed {
+  background: var(--sp-olive);
+  color: #fdfaf1;
+}
+
+.sp-chip--pending {
+  background: var(--sp-amber-bg);
+  color: var(--sp-amber);
+  border: 1px solid color-mix(in srgb, var(--sp-amber) 38%, transparent);
+}
+
+.sp-chip--declined {
+  background: var(--sp-gray-bg);
+  color: var(--sp-gray);
+}
+
+.sp-chip--diet {
+  background: var(--sp-green-bg);
+  color: var(--sp-green);
+}
+
+.sp-chip--allergy {
+  background: var(--sp-terracotta-bg);
+  color: var(--sp-terracotta);
+}
+
+.sp-chip--note {
+  background: color-mix(in srgb, var(--sp-sand) 30%, white);
+  color: #7a5f2e;
+  font-weight: 500;
+}
+
+.sp-guest-row__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.sp-select-assign {
+  max-width: 15rem;
+  min-width: 9.5rem;
+  padding: 0.32rem 1.6rem 0.32rem 0.6rem;
+  border: 1px solid var(--sp-line);
+  border-radius: 9px;
+  background:
+    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236e6c38' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")
+      no-repeat right 0.55rem center / 0.65rem,
+    color-mix(in srgb, white 82%, var(--sp-ivory));
+  color: var(--sp-charcoal);
+  font-family: var(--sp-font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sp-select-assign:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sp-select-assign--compact {
+  max-width: 12rem;
+  min-width: 8.5rem;
+  font-size: 0.76rem;
+  background-color: color-mix(in srgb, white 55%, var(--sp-ivory));
+  border-color: transparent;
+}
+
+.sp-select-assign--compact:hover,
+.sp-select-assign--compact:focus-visible {
+  border-color: var(--sp-line);
+  background-color: white;
+}
+
+.sp-minicon {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex: none;
+  color: color-mix(in srgb, var(--sp-olive) 70%, var(--sp-charcoal));
+}
+

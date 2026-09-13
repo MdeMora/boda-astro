@@ -17,6 +17,7 @@ import {
   type PlannerGuest,
   type PlannerTable,
 } from "@/lib/seating";
+import { defaultPosition } from "./utils";
 
 type Position = { x: number; y: number };
 type Seats = (PlannerGuest | null)[];
@@ -24,10 +25,6 @@ type Seats = (PlannerGuest | null)[];
 type Over = { tableId: string; seat: number | null } | { tableId: null };
 type DragKind = "table" | "guest";
 
-export const defaultPosition = (index: number): Position => ({
-  x: 40 + (index % 3) * 420,
-  y: 40 + Math.floor(index / 3) * 420,
-});
 const clamp = (value: number) =>
   Math.max(0, Math.min(10000, Math.round(value)));
 

@@ -1,0 +1,376 @@
+/* Seating planner — print layout, responsive, motion, touch, map overrides */
+
+/* ---------- print ---------- */
+
+.sp-print {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 16mm 14mm;
+  }
+
+  .sp-body {
+    background: white;
+  }
+
+  .sp-shell,
+  .sp-toasts {
+    display: none !important;
+  }
+
+  .sp-print {
+    display: block;
+    color: #1f2b32;
+    font-family: var(--sp-font-sans);
+    font-size: 11pt;
+  }
+
+  .sp-print__head h1 {
+    margin: 0 0 0.2rem;
+    font-family: var(--sp-font-serif);
+    font-size: 20pt;
+  }
+
+  .sp-print__head p {
+    margin: 0 0 1.4rem;
+    font-size: 10pt;
+    color: #55616a;
+  }
+
+  .sp-print__tables {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.2rem 1.6rem;
+  }
+
+  .sp-print__table {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .sp-print__table h2,
+  .sp-print__unassigned h2 {
+    margin: 0 0 0.35rem;
+    font-family: var(--sp-font-serif);
+    font-size: 13pt;
+    border-bottom: 1px solid #b7a77f;
+    padding-bottom: 0.15rem;
+  }
+
+  .sp-print__count {
+    font-family: var(--sp-font-sans);
+    font-size: 9.5pt;
+    color: #55616a;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sp-print__table ul,
+  .sp-print__unassigned ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .sp-print__table li,
+  .sp-print__unassigned li {
+    margin-bottom: 0.22rem;
+  }
+
+  .sp-print__table span {
+    color: #4a565e;
+  }
+
+  .sp-print__empty {
+    color: #6a757d;
+    font-style: italic;
+  }
+
+  .sp-print__unassigned {
+    margin-top: 1.6rem;
+    break-inside: avoid;
+  }
+
+  .sp-print__foot {
+    margin-top: 1.8rem;
+    font-size: 9pt;
+    color: #6a757d;
+    border-top: 1px solid #b7a77f;
+    padding-top: 0.4rem;
+  }
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1080px) {
+  .sp-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sp-sidebar {
+    position: static;
+    max-height: none;
+  }
+
+  .sp-guest-list {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 720px) {
+  .sp-header__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .sp-menu__panel {
+    position: fixed;
+    right: 0.6rem;
+    left: 0.6rem;
+    top: auto;
+  }
+
+  .sp-stats__list {
+    gap: 0.45rem 1.1rem;
+  }
+
+  .sp-stats__side {
+    text-align: left;
+  }
+
+  .sp-guest-row__actions {
+    width: 100%;
+  }
+
+  .sp-guest-row__actions .sp-select-assign {
+    flex: 1 1 auto;
+    max-width: none;
+  }
+
+  .sp-dialog {
+    width: calc(100vw - 1rem);
+  }
+
+  .sp-field-row {
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .sp-banner__actions {
+    width: 100%;
+  }
+
+  .sp-banner__actions .sp-btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+/* ---------- misc ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .sp-dialog[open] {
+    animation: sp-dialog-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .sp-dialog[open]::backdrop {
+    animation: sp-backdrop-in 200ms ease-out;
+  }
+
+  .sp-toast {
+    animation: sp-toast-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .sp-menu__panel {
+    animation: sp-menu-in 140ms ease-out;
+  }
+}
+
+@keyframes sp-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sp-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sp-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sp-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-spin {
+    animation: none;
+  }
+}
+
+/* ---------- touch ---------- */
+
+@media (pointer: coarse) {
+  .sp-iconbtn {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .sp-iconbtn--tiny {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+/* Interactive floor plan and shadcn surfaces */
+.sp-body {
+  background: var(--sp-ivory);
+}
+.sp-shell {
+  max-width: 1600px;
+}
+.sp-panel {
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--sp-charcoal) 5%, transparent);
+}
+.sp-stats {
+  padding: 1rem 0;
+}
+.sp-stats__list {
+  gap: 1rem 2rem;
+}
+.sp-stat {
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 0.15rem;
+}
+.sp-stat dd {
+  font-family: var(--sp-font-sans);
+  font-size: 1.65rem;
+}
+.sp-stat dt {
+  font-size: 0.7rem;
+}
+.sp-workspace {
+  grid-template-columns: minmax(0, 1fr) 350px;
+}
+.sp-modal {
+  width: min(30rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  background: var(--sp-card);
+  font-family: var(--sp-font-sans);
+}
+.sp-modal--wide {
+  width: min(38rem, calc(100vw - 2rem));
+  max-width: 38rem;
+}
+.sp-modal [data-slot="dialog-close"] {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+}
+[data-slot="select-content"],
+[data-slot="dropdown-menu-content"] {
+  z-index: 60;
+  background-color: var(--sp-card);
+  color: var(--sp-charcoal);
+  border-color: var(--sp-line);
+  font-family: var(--sp-font-sans);
+}
+[data-slot="select-trigger"] {
+  height: auto;
+  min-height: 36px;
+  text-align: left;
+  max-width: 100%;
+}
+[data-slot="select-item"] {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.sp-input--search {
+  padding-left: 2.2rem;
+}
+.sp-check {
+  padding: 0;
+  border: 1px solid var(--sp-line);
+}
+.sp-iconbtn {
+  padding: 0;
+}
+.sp-view-tabs {
+  margin-bottom: 1rem;
+}
+@media (max-width: 1100px) {
+  .sp-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sp-sidebar {
+    position: static;
+    max-height: 650px;
+  }
+}
+@media (max-width: 720px) {
+  .sp-modal input,
+  .sp-modal textarea,
+  .sp-filters input {
+    font-size: 16px;
+  }
+  .sp-stats__list {
+    gap: 1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+.sp-select-assign {
+  background-image: none;
+  padding-right: 0.6rem;
+  min-width: 0;
+}
+.sp-guest-row__actions .sp-select-assign {
+  flex: 1;
+  width: 0;
+}
+.sp-select-assign [data-slot="select-value"] {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sp-guest-row__actions {
+  width: 100%;
+  min-width: 0;
+}
+.sp-guest-row__actions .sp-select-assign {
+  max-width: none;
+}

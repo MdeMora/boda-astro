@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import {
   assignGuest,
+  deleteGuest,
+  deleteTable,
   emptyPlan,
   mergeGuests,
   parseGuestCsv,
@@ -8,6 +10,8 @@ import {
   planToCsv,
   seatGuest,
   tableSeats,
+  upsertGuest,
+  upsertTable,
   type PlannerGuest,
   type PlannerTable,
   type SeatingPlan,
@@ -306,14 +310,14 @@ describe("assignGuest", () => {
   test("rejects full tables", () => {
     expectSeatingError(
       () => assignGuest(basePlan(), "g3", "t1"),
-      /"Mesa 1" is full \(2\/2/,
+      /«Mesa 1» está completa/,
     );
   });
 
   test("rejects declined guests", () => {
     const plan = basePlan();
     plan.guests.push(guest({ id: "g4", name: "Dana", attendance: "declined" }));
-    expectSeatingError(() => assignGuest(plan, "g4", "t2"), /declined/i);
+    expectSeatingError(() => assignGuest(plan, "g4", "t2"), /declinó/i);
   });
 
   test("allows unassigning a declined guest", () => {
@@ -328,11 +332,11 @@ describe("assignGuest", () => {
   test("rejects unknown guests and tables", () => {
     expectSeatingError(
       () => assignGuest(basePlan(), "ghost", "t1"),
-      /Guest not found: "ghost"/,
+      /Invitado no encontrado: "ghost"/,
     );
     expectSeatingError(
       () => assignGuest(basePlan(), "g3", "ghost"),
-      /Table not found: "ghost"/,
+      /Mesa no encontrada: "ghost"/,
     );
   });
 
@@ -464,7 +468,7 @@ describe("seatGuest", () => {
   test("rejects an unassigned guest taking an occupied seat at a full table", () => {
     expectSeatingError(
       () => seatGuest(seatedPlan(), "e", "t2", 0),
-      /"Mesa 2" is full/,
+      /«Mesa 2» está completa/,
     );
   });
 
@@ -480,11 +484,11 @@ describe("seatGuest", () => {
   test("rejects seats outside the capacity and declined guests", () => {
     expectSeatingError(
       () => seatGuest(seatedPlan(), "a", "t1", 3),
-      /Seat 4 does not exist/,
+      /no tiene un asiento 4/,
     );
     const plan = seatedPlan();
     plan.guests.push(guest({ id: "z", attendance: "declined" }));
-    expectSeatingError(() => seatGuest(plan, "z", "t1", 2), /declined/);
+    expectSeatingError(() => seatGuest(plan, "z", "t1", 2), /declinó/);
   });
 
   test("does not mutate the input plan", () => {
@@ -722,14 +726,14 @@ describe("parseGuestCsv", () => {
   test("fails with a useful message when the name column is missing", () => {
     expectSeatingError(
       () => parseGuestCsv("nombre,group\nA,Familia"),
-      /missing required header.*name/i,
+      /Faltan columnas obligatorias.*name/i,
     );
   });
 
   test("fails on unknown columns instead of silently dropping them", () => {
     expectSeatingError(
       () => parseGuestCsv("name,email\na@b.c,x@y.z"),
-      /unknown header column.*email/i,
+      /Hay columnas desconocidas.*email/i,
     );
   });
 
@@ -746,9 +750,9 @@ describe("parseGuestCsv", () => {
     } catch (error) {
       expect(error).toBeInstanceOf(SeatingPlanError);
       const message = error instanceof Error ? error.message : "";
-      expect(message).toContain("row 3");
+      expect(message).toContain("fila 3");
       expect(message).toContain('"maybe"');
-      expect(message).toContain("row 4");
+      expect(message).toContain("fila 4");
       expect(message).toContain("nunca");
     }
   });
@@ -760,15 +764,130 @@ describe("parseGuestCsv", () => {
     // A row that has other data but no name is an error, not a skipped row.
     expectSeatingError(
       () => parseGuestCsv("name,notes\nAna,hola\n,Fila sin nombre\n"),
-      /row 3.*"name" is required/i,
+      /fila 3.*«name» no puede estar vacía/i,
     );
   });
 
   test("rejects an unclosed quote", () => {
     expectSeatingError(
       () => parseGuestCsv('name,notes\nAna,"sin cerrar'),
-      /unclosed quoted field/i,
+      /entrecomillado sin cerrar/i,
     );
+  });
+});
+
+describe("upsertTable", () => {
+  test("creates a new table", () => {
+    const plan = basePlan();
+    const next = upsertTable(plan, table("t9", "Mesa nueva", 6));
+    expect(next.tables).toHaveLength(3);
+    expect(next.tables.find((t) => t.id === "t9")).toMatchObject({
+      name: "Mesa nueva",
+      capacity: 6,
+    });
+    expect(plan.tables).toHaveLength(2);
+  });
+
+  test("replaces an existing table by id", () => {
+    const plan = basePlan();
+    const next = upsertTable(plan, table("t1", "Mesa renombrada", 8, "rectangular"));
+    expect(next.tables.find((t) => t.id === "t1")).toMatchObject({
+      name: "Mesa renombrada",
+      capacity: 8,
+      shape: "rectangular",
+    });
+    expect(plan.tables.find((t) => t.id === "t1")?.name).toBe("Mesa 1");
+  });
+});
+
+describe("deleteTable", () => {
+  test("removes the table and unseats its guests via unseated()", () => {
+    const plan = basePlan();
+    plan.guests[0] = { ...plan.guests[0], seat: 0 };
+    const next = deleteTable(plan, "t1");
+    expect(next.tables.map((t) => t.id)).toEqual(["t2"]);
+    const ana = next.guests.find((g) => g.id === "g1");
+    const bo = next.guests.find((g) => g.id === "g2");
+    expect(ana?.tableId).toBeNull();
+    expect(bo?.tableId).toBeNull();
+    expect("seat" in ana!).toBe(false);
+    expect("seat" in bo!).toBe(false);
+    expect(plan.tables).toHaveLength(2);
+  });
+
+  test("leaves guests at other tables untouched", () => {
+    const plan = basePlan();
+    plan.guests.push(guest({ id: "g4", name: "Dana", tableId: "t2", seat: 0 }));
+    const next = deleteTable(plan, "t1");
+    expect(next.guests.find((g) => g.id === "g4")).toMatchObject({
+      tableId: "t2",
+      seat: 0,
+    });
+  });
+});
+
+describe("upsertGuest", () => {
+  test("appends a new guest", () => {
+    const plan = basePlan();
+    const next = upsertGuest(
+      plan,
+      guest({ id: "manual-1", name: "Nuevo", tableId: null }),
+    );
+    expect(next.guests).toHaveLength(4);
+    expect(next.guests.find((g) => g.id === "manual-1")?.name).toBe("Nuevo");
+    expect(plan.guests).toHaveLength(3);
+  });
+
+  test("updates an existing guest in place", () => {
+    const plan = basePlan();
+    const next = upsertGuest(
+      plan,
+      guest({ id: "g1", name: "Ana García", notes: "Nota", tableId: "t1", seat: 0 }),
+    );
+    expect(next.guests.find((g) => g.id === "g1")).toMatchObject({
+      name: "Ana García",
+      notes: "Nota",
+      tableId: "t1",
+      seat: 0,
+    });
+  });
+
+  test("unseats the guest when attendance becomes declined", () => {
+    const plan = basePlan();
+    plan.guests[0] = { ...plan.guests[0], seat: 1 };
+    const next = upsertGuest(
+      plan,
+      guest({
+        id: "g1",
+        name: "Ana",
+        attendance: "declined",
+        tableId: "t1",
+        seat: 1,
+      }),
+    );
+    const ana = next.guests.find((g) => g.id === "g1");
+    expect(ana?.attendance).toBe("declined");
+    expect(ana?.tableId).toBeNull();
+    expect("seat" in ana!).toBe(false);
+  });
+
+  test("creates a declined guest unseated", () => {
+    const next = upsertGuest(
+      basePlan(),
+      guest({ id: "g9", name: "Rechazado", attendance: "declined" }),
+    );
+    const created = next.guests.find((g) => g.id === "g9");
+    expect(created?.tableId).toBeNull();
+    expect("seat" in created!).toBe(false);
+  });
+});
+
+describe("deleteGuest", () => {
+  test("removes the guest and does not mutate the input plan", () => {
+    const plan = basePlan();
+    const next = deleteGuest(plan, "g1");
+    expect(next.guests.map((g) => g.id)).toEqual(["g2", "g3"]);
+    expect(plan.guests).toHaveLength(3);
   });
 });
 
